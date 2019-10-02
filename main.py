@@ -4,9 +4,6 @@ import openvr
 
 openvr.init(openvr.VRApplication_Overlay)
 ids = []
-for i in range(openvr.k_unMaxTrackedDeviceCount):
-    if openvr.VRSystem().getTrackedDeviceClass(i) == 2:
-        ids.append(i)
 
 leftId = openvr.VRSystem().getTrackedDeviceIndexForControllerRole(openvr.TrackedControllerRole_LeftHand)
 rightId = openvr.VRSystem().getTrackedDeviceIndexForControllerRole(openvr.TrackedControllerRole_RightHand)
@@ -17,11 +14,6 @@ def to_percent(value):
 
 
 while True:
-    for i in ids:
-        controller_status = openvr.VRSystem().getFloatTrackedDeviceProperty(i, openvr.Prop_DeviceBatteryPercentage_Float)
-        print(controller_status)
-        sys.stdout.flush()
-        time.sleep(0.01)
     overlay = openvr.IVROverlay()
     notification = openvr.IVRNotifications()
     left_battery = openvr.VRSystem().getFloatTrackedDeviceProperty(leftId, openvr.Prop_DeviceBatteryPercentage_Float)
@@ -35,7 +27,7 @@ while True:
                                                        "Left Battery low: \n %s %%" % (
                                                        to_percent(left_battery)),
                                                        openvr.EVRNotificationStyle_Application, None)
-        except openvr.error_code.NotificationError_OK:
+        except openvr.error_code.NotificationError_OK:  # why would this throw an error
             pass
     if right_battery < 0.15:
         try:
@@ -45,7 +37,7 @@ while True:
                                                        "Right Battery low: \n %s %%" % (
                                                        to_percent(right_battery)),
                                                        openvr.EVRNotificationStyle_Application, None)
-        except openvr.error_code.NotificationError_OK:
+        except openvr.error_code.NotificationError_OK:  # why would this throw an error
             pass
 
     time.sleep(60)
